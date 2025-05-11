@@ -68,6 +68,8 @@ This generates the executable json2relcsv.
 Run Instructions
 Run the tool with the following command:
 ./json2relcsv < input.json [--print-ast] [--out-dir DIR]
+OR 
+make test TEST_FILE=test1.json
 
 
 < input.json: Provide the JSON input via stdin.
@@ -134,6 +136,8 @@ test5.json: Root-level array, produces people.csv.
 
 To run a test case:
 ./json2relcsv < test_cases/test1.json --out-dir output
+OR
+make test TEST_FILE=test1.json
 
 Compare the output CSVs in output/ with the expected files in test_cases/.
 
