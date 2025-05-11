@@ -1,3 +1,4 @@
+
 JSON to Relational CSV Converter
 Overview
 This project implements a tool that converts a JSON file into relational CSV tables, following the specifications outlined in the assignment. The tool uses Flex for lexical analysis, Yacc/Bison for parsing, and C for building an Abstract Syntax Tree (AST), performing semantic analysis, and generating CSV files. It supports JSON files up to 30 MiB, creates relational tables with primary and foreign keys, and streams CSV output to avoid large memory buffers.
