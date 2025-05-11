@@ -1,0 +1,26 @@
+#ifndef AST_H
+#define AST_H
+
+typedef struct ast_node ast_node;
+
+enum node_type {
+    NODE_OBJECT,
+    NODE_ARRAY,
+    NODE_STRING,
+    NODE_NUMBER,
+    NODE_TRUE,
+    NODE_FALSE,
+    NODE_NULL
+};
+
+struct ast_node {
+    enum node_type type;
+    union {
+        struct { char *key; ast_node *value; ast_node *next; } object;
+        struct { ast_node *element; ast_node *next; } array;
+        char *string;
+        char *number;
+    } data;
+};
+
+#endif // AST_H

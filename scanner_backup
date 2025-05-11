@@ -1,0 +1,77 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#include "ast.h"          // Include AST definitions first
+#include "parser.tab.h"   // Then include parser tokens and types
+
+#define YY_USER_ACTION \
+    yylloc.first_line = yylloc.last_line; \
+    yylloc.first_column = yylloc.last_column; \
+    for (int i = 0; i < yyleng; i++) { \
+        if (yytext[i] == '\n') { \
+            yylloc.last_line++; \
+            yylloc.last_column = 1; \
+        } else { \
+            yylloc.last_column++; \
+        } \
+    }
+
+void yyerror(const char *msg);
+%}
+
+%option noyywrap
+%option yylineno
+
+DIGIT       [0-9]
+DIGITS      {DIGIT}+
+INT         -?{DIGITS}
+FRAC        \.{DIGITS}
+EXP         [eE][+-]?{DIGITS}
+NUMBER      {INT}({FRAC})?({EXP})?
+STRING      \"([^\"\\]|\\["\\\/bfnrt]|\\u[0-9a-fA-F]{4})*\"
+WHITESPACE  [ \t\r\n]+
+TRUE        true
+FALSE       false
+T_NULL      null
+
+%%
+
+"{"         { return LBRACE; }
+"}"         { return RBRACE; }
+"["         { return LBRACK; }
+"]"         { return RBRACK; }
+":"         { return COLON; }
+","         { return COMMA; }
+
+{STRING}    {
+                yylval.str = strdup(yytext);
+                if (!yylval.str) {
+                    yyerror("Memory allocation failed for string");
+                    return YYerror;
+                }
+                return STRING;
+            }
+
+{NUMBER}    {
+                yylval.str = strdup(yytext);
+                if (!yylval.str) {
+                    yyerror("Memory allocation failed for number");
+                    return YYerror;
+                }
+                return NUMBER;
+            }
+
+{TRUE}      { return TRUE; }
+{FALSE}     { return FALSE; }
+{T_NULL}    { return T_NULL; }
+
+{WHITESPACE} { /* Ignore */ }
+
+.           {
+                char msg[64];
+                snprintf(msg, sizeof(msg), "Invalid character: %s", yytext);
+                yyerror(msg);
+                return YYerror;
+            }
+
+%%
