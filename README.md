@@ -170,5 +170,4 @@ To run a test case:
 OR
 make test TEST_FILE=test1.json
 
-Compare the output CSVs in output/ with the expected files in test_cases/.
 
